@@ -6,12 +6,11 @@ BeyondSure AI Email Generator
 Workflow:
 
 1. User enters campaign topic
-2. System validates that the topic belongs to Healthcare or Insurance
-3. System finds 5 relevant + structurally different templates
-4. Five HTML previews are shown
-5. User selects one template
-6. ONLY THEN Groq generates the final campaign content
-7. Final email is rendered using the selected template
+2. System finds 5 relevant + structurally different templates
+3. Five HTML previews are shown
+4. User selects one template
+5. ONLY THEN Groq generates the final campaign content
+6. Final email is rendered using the selected template
 """
 
 from pathlib import Path
@@ -23,83 +22,6 @@ from template_registry import TEMPLATE_REGISTRY, list_templates
 from template_selector import select_templates
 from generator import generate_campaign_content
 from renderer import render_email
-
-
-# ============================================================================
-# DOMAIN VALIDATION
-# ============================================================================
-
-ALLOWED_DOMAIN_KEYWORDS = [
-    # Healthcare
-    "health",
-    "healthcare",
-    "hospital",
-    "doctor",
-    "medical",
-    "medicine",
-    "clinic",
-    "patient",
-    "diagnosis",
-    "treatment",
-    "surgery",
-    "wellness",
-    "opd",
-    "pharmacy",
-    "dental",
-    "diagnostic",
-    "diagnostics",
-    "checkup",
-    "healthcare",
-    "telemedicine",
-    "therapy",
-    "care",
-    "emergency",
-    "ambulance",
-    "nurse",
-    "nursing",
-    "specialist",
-    "healthcare provider",
-
-    # Insurance
-    "insurance",
-    "policy",
-    "premium",
-    "claim",
-    "claims",
-    "coverage",
-    "insured",
-    "insurer",
-    "underwriting",
-    "renewal",
-    "renew",
-    "life insurance",
-    "health insurance",
-    "motor insurance",
-    "car insurance",
-    "vehicle insurance",
-    "travel insurance",
-    "home insurance",
-    "term insurance",
-    "medical insurance",
-    "property insurance",
-    "business insurance",
-]
-
-
-def is_allowed_domain(topic: str) -> bool:
-    """
-    Allow only Healthcare and Insurance related topics.
-    """
-
-    if not topic:
-        return False
-
-    topic_lower = topic.lower().strip()
-
-    return any(
-        keyword in topic_lower
-        for keyword in ALLOWED_DOMAIN_KEYWORDS
-    )
 
 
 # ============================================================================
@@ -120,7 +42,6 @@ st.set_page_config(
 BASE_DIR = Path(__file__).resolve().parent
 
 TEMPLATES_DIR = BASE_DIR / "templates"
-
 PREVIEW_GALLERY_DIR = BASE_DIR / "preview-gallery"
 
 
@@ -250,7 +171,7 @@ def get_template_preview_path(template_key: str):
 
 def load_template_preview(template_key: str):
     """
-    Load an existing static HTML template preview.
+    Load an existing static HTML preview.
 
     No LLM call is made here.
     """
@@ -421,10 +342,6 @@ with tab_generate:
 
     if find_templates_clicked:
 
-        # ==============================================================
-        # BASIC VALIDATION
-        # ==============================================================
-
         if not topic or len(topic.strip()) < 3:
 
             st.error(
@@ -433,33 +350,6 @@ with tab_generate:
             )
 
             st.stop()
-
-        # ==============================================================
-        # DOMAIN VALIDATION
-        # ==============================================================
-
-        if not is_allowed_domain(topic):
-
-            st.error(
-                "❌ Template cannot be generated."
-            )
-
-            st.warning(
-                "This AI Email Generator supports only "
-                "Healthcare and Insurance related campaigns."
-            )
-
-            st.info(
-                "Try topics such as Health Insurance, OPD Services, "
-                "Hospital Care, Insurance Renewal, Medical Checkup, "
-                "or Insurance Claims."
-            )
-
-            st.stop()
-
-        # ==============================================================
-        # CATEGORY
-        # ==============================================================
 
         manual_category = None
 
@@ -470,10 +360,6 @@ with tab_generate:
                 .lower()
                 .replace(" ", "_")
             )
-
-        # ==============================================================
-        # FIND FIVE TEMPLATES
-        # ==============================================================
 
         with st.spinner(
             "Finding the best 5 unique designs..."
@@ -500,10 +386,6 @@ with tab_generate:
 
                 st.stop()
 
-        # ==============================================================
-        # CHECK RESULTS
-        # ==============================================================
-
         if not recommended_templates:
 
             st.error(
@@ -512,9 +394,7 @@ with tab_generate:
 
             st.stop()
 
-        # ==============================================================
-        # SAVE RECOMMENDATIONS
-        # ==============================================================
+        # Save recommendations
 
         st.session_state[
             "recommended_templates"
@@ -524,9 +404,7 @@ with tab_generate:
             "preview_topic"
         ] = topic.strip()
 
-        # ==============================================================
-        # RESET PREVIOUS SELECTION
-        # ==============================================================
+        # Reset previous selection
 
         st.session_state.pop(
             "selected_template",
@@ -540,16 +418,6 @@ with tab_generate:
 
         st.session_state.pop(
             "last_html",
-            None,
-        )
-
-        st.session_state.pop(
-            "last_topic",
-            None,
-        )
-
-        st.session_state.pop(
-            "last_template",
             None,
         )
 
@@ -643,7 +511,7 @@ with tab_generate:
                 with col:
 
                     # --------------------------------------------------
-                    # TEMPLATE INFORMATION
+                    # Template information
                     # --------------------------------------------------
 
                     st.markdown(
@@ -663,7 +531,7 @@ with tab_generate:
                         )
 
                     # --------------------------------------------------
-                    # PREVIEW
+                    # Preview
                     # --------------------------------------------------
 
                     preview_html = (
@@ -691,7 +559,7 @@ with tab_generate:
                         )
 
                     # --------------------------------------------------
-                    # SELECT TEMPLATE
+                    # Select template
                     # --------------------------------------------------
 
                     if st.button(
@@ -993,7 +861,7 @@ with tab_gallery:
                 )
 
                 # ------------------------------------------------------
-                # GALLERY PREVIEW
+                # Gallery preview
                 # ------------------------------------------------------
 
                 preview_html = (
