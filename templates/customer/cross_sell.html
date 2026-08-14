@@ -1,0 +1,66 @@
+{% from "_base/macros.html" import doctype_open, doctype_close, container_open, container_close, header, footer, button, divider %}
+{{ doctype_open(brand, preheader=content.hero_headline) }}
+{{ container_open(600) }}
+{{ header(brand) }}
+
+{# ---- "BECAUSE YOU HAVE X" FRAMING ---- #}
+<tr>
+<td class="px-24" style="padding: 24px 40px 6px 40px; background-color:{{ brand.card_background }};">
+  <div style="font-family:{{ brand.font_family }};font-size:11px;letter-spacing:1px;text-transform:uppercase;color:{{ brand.accent_color }};font-weight:700;">
+    Recommended for you
+  </div>
+  <h1 class="h1" style="font-family:{{ brand.font_family }};font-size:23px;line-height:30px;color:{{ brand.text_color }};margin:8px 0 0 0;font-weight:800;">
+    {{ content.hero_headline }}
+  </h1>
+  {% if content.intro %}
+  <p style="font-family:{{ brand.font_family }};font-size:13px;color:{{ brand.muted_text_color }};margin:10px 0 0 0;">{{ content.intro }}</p>
+  {% endif %}
+</td>
+</tr>
+
+{# ---- COMPARISON-STYLE ADD-ON CARD ---- #}
+<tr>
+<td class="px-24" style="padding: 18px 40px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:{{ brand.background_color }};border-radius:10px;">
+    <tr><td style="padding:18px 20px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td width="50%" class="stack" valign="top" style="padding-right:10px;">
+            <div style="font-family:{{ brand.font_family }};font-size:10px;letter-spacing:1px;text-transform:uppercase;color:{{ brand.muted_text_color }};font-weight:700;">You currently have</div>
+            <div style="font-family:{{ brand.font_family }};font-size:13px;color:{{ brand.text_color }};margin-top:6px;">{{ content.problem or 'An active BeyondSure policy' }}</div>
+          </td>
+          <td width="50%" class="stack" valign="top" style="padding-left:10px;border-left:1px dashed #C9D1E0;">
+            <div style="font-family:{{ brand.font_family }};font-size:10px;letter-spacing:1px;text-transform:uppercase;color:{{ brand.primary_color }};font-weight:700;">We recommend adding</div>
+            <div style="font-family:{{ brand.font_family }};font-size:13px;color:{{ brand.text_color }};margin-top:6px;font-weight:700;">{{ content.solution or content.hero_headline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</td>
+</tr>
+
+{% if content.benefits %}
+<tr>
+<td class="px-24" style="padding: 4px 40px 10px 40px;">
+  {% for b in content.benefits %}
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:8px;">
+    <tr>
+      <td width="20"><span style="color:{{ brand.success_color }};font-size:13px;">&#10003;</span></td>
+      <td><span style="font-family:{{ brand.font_family }};font-size:13px;color:{{ brand.text_color }};">{{ b.title }} &ndash; {{ b.description }}</span></td>
+    </tr>
+  </table>
+  {% endfor %}
+</td>
+</tr>
+{% endif %}
+
+<tr>
+<td align="center" style="padding: 18px 24px 30px 24px;">
+  {{ button(content.cta.label, content.cta.url or brand.website, brand) }}
+</td>
+</tr>
+
+{{ footer(brand, year, content.disclaimer) }}
+{{ container_close() }}
+{{ doctype_close() }}

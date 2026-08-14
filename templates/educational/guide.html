@@ -1,0 +1,74 @@
+{% from "_base/macros.html" import doctype_open, doctype_close, container_open, container_close, header, footer, button, divider %}
+{{ doctype_open(brand, preheader=content.hero_headline) }}
+{{ container_open(600) }}
+{{ header(brand) }}
+
+<tr>
+<td class="px-24" style="padding: 26px 40px 6px 40px; background-color:{{ brand.card_background }};">
+  <h1 class="h1" style="font-family:{{ brand.font_family }};font-size:24px;line-height:31px;color:{{ brand.text_color }};margin:0;font-weight:800;">
+    {{ content.hero_headline }}
+  </h1>
+  {% if content.intro %}
+  <p style="font-family:{{ brand.font_family }};font-size:14px;line-height:22px;color:{{ brand.muted_text_color }};margin:12px 0 0 0;">{{ content.intro }}</p>
+  {% endif %}
+</td>
+</tr>
+
+{# ---- TABLE OF CONTENTS STRIP ---- #}
+{% if content.steps or content.features %}
+<tr>
+<td class="px-24" style="padding: 14px 40px; background-color:{{ brand.background_color }};">
+  <div style="font-family:{{ brand.font_family }};font-size:10px;letter-spacing:1px;text-transform:uppercase;color:{{ brand.muted_text_color }};font-weight:700;margin-bottom:8px;">In this guide</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    {% for item in (content.steps or content.features) %}
+    <tr>
+      <td style="padding:3px 0;">
+        <span style="font-family:{{ brand.font_family }};font-size:12px;color:{{ brand.primary_color }};font-weight:700;">{{ loop.index }}.</span>
+        <span style="font-family:{{ brand.font_family }};font-size:12px;color:{{ brand.text_color }};"> {{ item.title if item.title is defined else item.name }}</span>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</td>
+</tr>
+{% endif %}
+
+{# ---- NUMBERED GUIDE SECTIONS ---- #}
+{% if content.steps %}
+<tr>
+<td class="px-24" style="padding: 20px 40px;">
+  {% for s in content.steps %}
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:18px;">
+    <tr>
+      <td width="34" valign="top">
+        <div style="width:26px;height:26px;border-radius:6px;background-color:{{ brand.primary_color }};color:#fff;font-family:{{ brand.font_family }};font-size:12px;font-weight:800;text-align:center;line-height:26px;">{{ s.step_number }}</div>
+      </td>
+      <td style="padding-left:12px;">
+        <div style="font-family:{{ brand.font_family }};font-size:14px;font-weight:700;color:{{ brand.text_color }};">{{ s.title }}</div>
+        <div style="font-family:{{ brand.font_family }};font-size:13px;line-height:20px;color:{{ brand.muted_text_color }};margin-top:4px;">{{ s.description }}</div>
+      </td>
+    </tr>
+  </table>
+  {% endfor %}
+</td>
+</tr>
+{% endif %}
+
+{% if content.key_takeaway %}
+{{ divider() }}
+<tr>
+<td class="px-24" style="padding: 18px 40px;">
+  <p style="font-family:{{ brand.font_family }};font-size:13px;line-height:21px;color:{{ brand.text_color }};margin:0;font-style:italic;">{{ content.key_takeaway }}</p>
+</td>
+</tr>
+{% endif %}
+
+<tr>
+<td align="center" style="padding: 26px 24px;">
+  {{ button(content.cta.label, content.cta.url or brand.website, brand) }}
+</td>
+</tr>
+
+{{ footer(brand, year, content.disclaimer) }}
+{{ container_close() }}
+{{ doctype_close() }}

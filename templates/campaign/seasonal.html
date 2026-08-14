@@ -1,0 +1,70 @@
+{% from "_base/macros.html" import doctype_open, doctype_close, container_open, container_close, header, footer, button, divider %}
+{{ doctype_open(brand, preheader=content.hero_headline) }}
+{{ container_open(600) }}
+{{ header(brand) }}
+
+{# ---- FULL-BLEED SEASONAL BANNER BAND ---- #}
+<tr>
+<td style="background: linear-gradient(120deg, {{ brand.secondary_color }} 0%, {{ brand.primary_color }} 100%); padding: 44px 30px;" align="center">
+  <div style="font-family:{{ brand.font_family }};font-size:34px;">&#127881;</div>
+  <h1 class="h1" style="font-family:{{ brand.font_family }};font-size:27px;line-height:34px;color:#FFFFFF;margin:10px 0 0 0;font-weight:800;">
+    {{ content.hero_headline }}
+  </h1>
+  {% if content.subheadline %}
+  <p style="font-family:{{ brand.font_family }};font-size:14px;color:#FFF3E0;margin:10px 0 0 0;">{{ content.subheadline }}</p>
+  {% endif %}
+</td>
+</tr>
+
+{% if content.intro %}
+<tr>
+<td class="px-24" style="padding: 24px 40px 6px 40px; background-color:{{ brand.card_background }};" align="center">
+  <p style="font-family:{{ brand.font_family }};font-size:14px;line-height:22px;color:{{ brand.text_color }};margin:0;text-align:center;">{{ content.intro }}</p>
+</td>
+</tr>
+{% endif %}
+
+{# ---- BENEFITS ROW ---- #}
+{% if content.benefits %}
+<tr>
+<td class="px-24" style="padding: 18px 24px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+    {% for b in content.benefits[:3] %}
+      <td class="stack" align="center" width="{{ (100/content.benefits[:3]|length)|round(0,'floor') }}%" style="padding:8px;">
+        <div style="background-color:{{ brand.background_color }};border-radius:10px;padding:16px 10px;">
+          <div style="font-family:{{ brand.font_family }};font-size:13px;font-weight:700;color:{{ brand.text_color }};">{{ b.title }}</div>
+          <div style="font-family:{{ brand.font_family }};font-size:11px;color:{{ brand.muted_text_color }};margin-top:5px;line-height:16px;">{{ b.description }}</div>
+        </div>
+      </td>
+    {% endfor %}
+    </tr>
+  </table>
+</td>
+</tr>
+{% endif %}
+
+{% if content.offer %}
+<tr>
+<td align="center" style="padding: 6px 24px 20px 24px;">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="background-color:{{ brand.background_color }};border-radius:10px;">
+    <tr><td style="padding:16px 26px;" align="center">
+      <div style="font-family:{{ brand.font_family }};font-size:16px;font-weight:800;color:{{ brand.primary_color }};">{{ content.offer.headline }}</div>
+      {% if content.offer.details %}
+      <div style="font-family:{{ brand.font_family }};font-size:12px;color:{{ brand.muted_text_color }};margin-top:4px;">{{ content.offer.details }}</div>
+      {% endif %}
+    </td></tr>
+  </table>
+</td>
+</tr>
+{% endif %}
+
+<tr>
+<td align="center" style="padding: 10px 24px 30px 24px;">
+  {{ button(content.cta.label, content.cta.url or brand.website, brand, bg=brand.secondary_color, color="#3A2400") }}
+</td>
+</tr>
+
+{{ footer(brand, year, content.disclaimer) }}
+{{ container_close() }}
+{{ doctype_close() }}

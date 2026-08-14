@@ -1,0 +1,98 @@
+{% from "_base/macros.html" import doctype_open, doctype_close, container_open, container_close, header, footer, button, divider %}
+{{ doctype_open(brand, preheader=content.offer.headline if content.offer else content.hero_headline) }}
+{{ container_open(600) }}
+{{ header(brand) }}
+
+{# ---- CAMPAIGN BADGE ---- #}
+<tr>
+<td align="center" style="padding: 20px 24px 0 24px; background-color:{{ brand.card_background }};">
+  <div style="display:inline-block;padding:6px 18px;border-radius:20px;background-color:{{ brand.secondary_color }};font-family:{{ brand.font_family }};font-size:12px;font-weight:800;letter-spacing:1px;color:#3A2400;text-transform:uppercase;">
+    Limited Time
+  </div>
+</td>
+</tr>
+
+{# ---- LARGE OFFER ---- #}
+<tr>
+<td align="center" style="padding: 14px 30px 8px 30px; background-color:{{ brand.card_background }};">
+  <div class="h1" style="font-family:{{ brand.font_family }};font-size:34px;line-height:40px;font-weight:800;color:{{ brand.primary_color }};">
+    {{ content.offer.headline if content.offer else content.hero_headline }}
+  </div>
+  {% if content.offer and content.offer.details %}
+  <p style="font-family:{{ brand.font_family }};font-size:15px;line-height:23px;color:{{ brand.text_color }};margin:10px 0 0 0;">
+    {{ content.offer.details }}
+  </p>
+  {% endif %}
+</td>
+</tr>
+
+{# ---- URGENCY MESSAGE BAR ---- #}
+{% if content.urgency_text or (content.offer and content.offer.expiry_text) %}
+<tr>
+<td align="center" style="padding: 16px 24px;">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="background-color:#FDECEC;border-radius:8px;">
+    <tr><td style="padding:10px 20px;">
+      <span style="font-family:{{ brand.font_family }};font-size:13px;font-weight:700;color:#C2410C;">
+        &#9203; {{ content.urgency_text or (content.offer.expiry_text if content.offer else '') }}
+      </span>
+    </td></tr>
+  </table>
+</td>
+</tr>
+{% endif %}
+
+{# ---- BENEFITS ---- #}
+{% if content.benefits %}
+<tr>
+<td class="px-24" style="padding: 8px 32px 8px 32px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    {% for b in content.benefits %}
+    <tr>
+      <td width="24" valign="top" style="padding:6px 0;">
+        <span style="color:{{ brand.success_color }};font-family:{{ brand.font_family }};font-size:15px;">&#10003;</span>
+      </td>
+      <td style="padding:6px 0;">
+        <span style="font-family:{{ brand.font_family }};font-size:14px;color:{{ brand.text_color }};font-weight:600;">{{ b.title }}</span>
+        <span style="font-family:{{ brand.font_family }};font-size:13px;color:{{ brand.muted_text_color }};"> &ndash; {{ b.description }}</span>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</td>
+</tr>
+{% endif %}
+
+{# ---- OFFER DETAILS CARD ---- #}
+{% if content.offer and content.offer.terms %}
+{{ divider() }}
+<tr>
+<td class="px-24" style="padding: 20px 32px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:{{ brand.background_color }};border-radius:8px;">
+    <tr><td style="padding:16px 18px;">
+      <div style="font-family:{{ brand.font_family }};font-size:12px;font-weight:700;color:{{ brand.text_color }};margin-bottom:4px;">Offer Details</div>
+      <div style="font-family:{{ brand.font_family }};font-size:12px;color:{{ brand.muted_text_color }};line-height:18px;">{{ content.offer.terms }}</div>
+    </td></tr>
+  </table>
+</td>
+</tr>
+{% endif %}
+
+{# ---- CTA ---- #}
+<tr>
+<td align="center" style="padding: 30px 24px 14px 24px;">
+  {{ button(content.cta.label, content.cta.url or brand.website, brand, bg=brand.secondary_color, color="#3A2400") }}
+</td>
+</tr>
+
+{# ---- TERMS ---- #}
+<tr>
+<td align="center" style="padding: 0 24px 20px 24px;">
+  <div style="font-family:{{ brand.font_family }};font-size:10px;color:{{ brand.muted_text_color }};">
+    *Terms and conditions apply. Offer subject to underwriting approval.
+  </div>
+</td>
+</tr>
+
+{{ footer(brand, year, content.disclaimer) }}
+{{ container_close() }}
+{{ doctype_close() }}

@@ -1,0 +1,51 @@
+{% from "_base/macros.html" import doctype_open, doctype_close, container_open, container_close, header_minimal, footer, button %}
+{{ doctype_open(brand, preheader=content.hero_headline) }}
+{{ container_open(600) }}
+{{ header_minimal(brand) }}
+
+{# ---- "WE MISS YOU" NARRATIVE OPENING ---- #}
+<tr>
+<td class="px-24" style="padding: 16px 40px 0 40px;" align="center">
+  <div style="font-family:{{ brand.font_family }};font-size:32px;">&#128075;</div>
+  <h1 class="h1" style="font-family:{{ brand.font_family }};font-size:22px;line-height:29px;color:{{ brand.text_color }};margin:12px 0 0 0;font-weight:800;text-align:center;">
+    {{ content.hero_headline }}
+  </h1>
+  {% if content.intro %}
+  <p style="font-family:{{ brand.font_family }};font-size:13px;line-height:21px;color:{{ brand.muted_text_color }};margin:12px 0 0 0;text-align:center;max-width:420px;">{{ content.intro }}</p>
+  {% endif %}
+</td>
+</tr>
+
+{# ---- WHAT'S CHANGED / WHAT THEY'RE MISSING ---- #}
+{% if content.benefits %}
+<tr>
+<td class="px-24" style="padding: 24px 40px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:{{ brand.background_color }};border-radius:10px;">
+    <tr><td style="padding:18px 20px;">
+      <div style="font-family:{{ brand.font_family }};font-size:10px;letter-spacing:1px;text-transform:uppercase;color:{{ brand.primary_color }};font-weight:700;margin-bottom:10px;">What you're missing</div>
+      {% for b in content.benefits %}
+      <div style="font-family:{{ brand.font_family }};font-size:12px;color:{{ brand.text_color }};margin-bottom:{{ '0' if loop.last else '8' }}px;">
+        <strong>{{ b.title }}</strong> &ndash; {{ b.description }}
+      </div>
+      {% endfor %}
+    </td></tr>
+  </table>
+</td>
+</tr>
+{% endif %}
+
+{# ---- SINGLE, LOW-FRICTION RE-ENTRY CTA (only one ask, nothing else competing) ---- #}
+<tr>
+<td align="center" style="padding: 10px 24px 8px 24px;">
+  {{ button(content.cta.label, content.cta.url or brand.website, brand) }}
+</td>
+</tr>
+<tr>
+<td align="center" style="padding: 0 24px 30px 24px;">
+  <div style="font-family:{{ brand.font_family }};font-size:11px;color:{{ brand.muted_text_color }};">No long forms. Just pick up where you left off.</div>
+</td>
+</tr>
+
+{{ footer(brand, year, content.disclaimer) }}
+{{ container_close() }}
+{{ doctype_close() }}

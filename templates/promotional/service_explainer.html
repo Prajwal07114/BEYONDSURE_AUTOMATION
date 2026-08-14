@@ -1,0 +1,74 @@
+{% from "_base/macros.html" import doctype_open, doctype_close, container_open, container_close, header, footer, button, divider %}
+{{ doctype_open(brand, preheader=content.hero_headline) }}
+{{ container_open(600) }}
+{{ header(brand) }}
+
+<tr>
+<td class="px-24" style="padding: 22px 40px 0 40px; background-color:{{ brand.card_background }};" align="center">
+  <h1 class="h1" style="font-family:{{ brand.font_family }};font-size:23px;line-height:30px;color:{{ brand.text_color }};margin:0;font-weight:800;text-align:center;">
+    {{ content.hero_headline }}
+  </h1>
+</td>
+</tr>
+
+{# ---- ICON ROW OVERVIEW (compact, wide) ---- #}
+{% if content.benefits %}
+<tr>
+<td class="px-24" style="padding: 20px 24px 6px 24px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+    {% for b in content.benefits[:4] %}
+      <td class="stack" align="center" width="{{ (100/content.benefits[:4]|length)|round(0,'floor') }}%" style="padding:6px;">
+        <div style="width:40px;height:40px;border-radius:50%;background-color:{{ brand.background_color }};margin:0 auto;line-height:40px;font-family:{{ brand.font_family }};font-size:16px;color:{{ brand.primary_color }};font-weight:800;">{{ loop.index }}</div>
+        <div style="font-family:{{ brand.font_family }};font-size:11px;font-weight:700;color:{{ brand.text_color }};margin-top:8px;">{{ b.title }}</div>
+      </td>
+    {% endfor %}
+    </tr>
+  </table>
+</td>
+</tr>
+{% endif %}
+
+{% if content.intro %}
+<tr>
+<td class="px-24" style="padding: 10px 40px;">
+  <p style="font-family:{{ brand.font_family }};font-size:13px;line-height:21px;color:{{ brand.muted_text_color }};margin:0;text-align:center;">{{ content.intro }}</p>
+</td>
+</tr>
+{% endif %}
+
+{{ divider() }}
+
+{# ---- LINEAR EXPLAINER SEQUENCE (left-aligned, connected by a vertical rule) ---- #}
+{% if content.steps %}
+<tr>
+<td class="px-24" style="padding: 22px 40px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    {% for s in content.steps %}
+    <tr>
+      <td width="28" valign="top" style="position:relative;">
+        <div style="width:10px;height:10px;border-radius:50%;background-color:{{ brand.accent_color }};margin-top:4px;"></div>
+        {% if not loop.last %}
+        <div style="width:1px;background-color:#D8DEE9;height:38px;margin-left:4px;"></div>
+        {% endif %}
+      </td>
+      <td style="padding-left:14px;padding-bottom:{{ '0' if loop.last else '10' }}px;">
+        <div style="font-family:{{ brand.font_family }};font-size:13px;font-weight:700;color:{{ brand.text_color }};">{{ s.title }}</div>
+        <div style="font-family:{{ brand.font_family }};font-size:12px;color:{{ brand.muted_text_color }};margin-top:3px;line-height:18px;">{{ s.description }}</div>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</td>
+</tr>
+{% endif %}
+
+<tr>
+<td align="center" style="padding: 18px 24px 30px 24px;">
+  {{ button(content.cta.label, content.cta.url or brand.website, brand, bg=brand.accent_color) }}
+</td>
+</tr>
+
+{{ footer(brand, year, content.disclaimer) }}
+{{ container_close() }}
+{{ doctype_close() }}

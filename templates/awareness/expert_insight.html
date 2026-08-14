@@ -1,0 +1,52 @@
+{% from "_base/macros.html" import doctype_open, doctype_close, container_open, container_close, header_minimal, footer, button %}
+{{ doctype_open(brand, preheader=content.hero_headline) }}
+{{ container_open(600) }}
+{{ header_minimal(brand) }}
+
+<tr>
+<td class="px-24" style="padding: 12px 40px 0 40px;">
+  <div style="font-family:{{ brand.font_family }};font-size:11px;letter-spacing:1px;text-transform:uppercase;color:{{ brand.muted_text_color }};font-weight:700;">Expert Insight</div>
+  <h1 class="h1" style="font-family: Georgia, serif; font-size:24px;line-height:31px;color:{{ brand.text_color }};margin:10px 0 0 0;font-weight:400;">
+    {{ content.hero_headline }}
+  </h1>
+</td>
+</tr>
+
+{# ---- NUMBERED INSIGHT CARDS -- a compilation, not one narrative ---- #}
+{% set insight_list = content.insights if content.insights else ([content.expert_insight] if content.expert_insight else []) %}
+{% if insight_list %}
+<tr>
+<td class="px-24" style="padding: 22px 40px;">
+  {% for ins in insight_list %}
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:{{ '0' if loop.last else '16' }}px;background-color:{{ brand.background_color }};border-radius:8px;">
+    <tr>
+      <td width="40" valign="top" style="padding:16px 0 16px 16px;">
+        <div style="font-family: Georgia, serif; font-size:20px;font-weight:700;color:{{ brand.primary_color }};">{{ loop.index }}</div>
+      </td>
+      <td style="padding:16px 16px 16px 8px;">
+        <div style="font-family: Georgia, serif; font-size:13px;line-height:21px;color:{{ brand.text_color }};">{{ ins }}</div>
+      </td>
+    </tr>
+  </table>
+  {% endfor %}
+</td>
+</tr>
+{% endif %}
+
+{% if content.key_takeaway %}
+<tr>
+<td class="px-24" style="padding: 4px 40px 18px 40px;">
+  <p style="font-family: Georgia, serif; font-size:13px;font-style:italic;color:{{ brand.muted_text_color }};margin:0;">{{ content.key_takeaway }}</p>
+</td>
+</tr>
+{% endif %}
+
+<tr>
+<td align="left" style="padding: 8px 40px 34px 40px;">
+  {{ button(content.cta.label, content.cta.url or brand.website, brand, bg=brand.dark_color) }}
+</td>
+</tr>
+
+{{ footer(brand, year, content.disclaimer) }}
+{{ container_close() }}
+{{ doctype_close() }}

@@ -1,0 +1,68 @@
+{% from "_base/macros.html" import doctype_open, doctype_close, container_open, container_close, header_minimal, footer, button, divider %}
+{{ doctype_open(brand, preheader=content.hero_headline) }}
+{{ container_open(640) }}
+{{ header_minimal(brand) }}
+
+{# ---- FORMAL TWO-COLUMN LETTERHEAD STYLE ---- #}
+<tr>
+<td class="px-24" style="padding: 8px 44px 0 44px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td width="70%" class="stack" valign="top">
+        <h1 class="h1" style="font-family:{{ brand.font_family }};font-size:23px;line-height:30px;color:{{ brand.text_color }};margin:0;font-weight:700;">
+          {{ content.hero_headline }}
+        </h1>
+      </td>
+      <td width="30%" class="stack" valign="top" align="right">
+        <div style="font-family:{{ brand.font_family }};font-size:10px;color:{{ brand.muted_text_color }};text-transform:uppercase;letter-spacing:1px;">For Businesses</div>
+      </td>
+    </tr>
+  </table>
+</td>
+</tr>
+
+{% if content.intro %}
+<tr>
+<td class="px-24" style="padding: 16px 44px 0 44px;">
+  <p style="font-family:{{ brand.font_family }};font-size:14px;line-height:22px;color:{{ brand.text_color }};margin:0;">{{ content.intro }}</p>
+</td>
+</tr>
+{% endif %}
+
+{% if content.problem %}
+<tr>
+<td class="px-24" style="padding: 14px 44px 0 44px;">
+  <p style="font-family:{{ brand.font_family }};font-size:13px;line-height:21px;color:{{ brand.muted_text_color }};margin:0;">{{ content.problem }}</p>
+</td>
+</tr>
+{% endif %}
+
+{# ---- TWO-COLUMN FEATURE TABLE ---- #}
+{% if content.features %}
+<tr>
+<td class="px-24" style="padding: 20px 44px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:2px solid {{ brand.dark_color }};">
+    {% for f in content.features %}
+    <tr>
+      <td width="35%" class="stack" valign="top" style="padding:12px 10px 12px 0;border-bottom:1px solid #E5E9F0;">
+        <span style="font-family:{{ brand.font_family }};font-size:12px;font-weight:700;color:{{ brand.text_color }};">{{ f.name }}</span>
+      </td>
+      <td width="65%" class="stack" valign="top" style="padding:12px 0;border-bottom:1px solid #E5E9F0;">
+        <span style="font-family:{{ brand.font_family }};font-size:12px;color:{{ brand.muted_text_color }};">{{ f.description }}</span>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</td>
+</tr>
+{% endif %}
+
+<tr>
+<td align="left" style="padding: 10px 44px 34px 44px;">
+  {{ button(content.cta.label, content.cta.url or brand.website, brand, bg=brand.dark_color) }}
+</td>
+</tr>
+
+{{ footer(brand, year, content.disclaimer) }}
+{{ container_close() }}
+{{ doctype_close() }}

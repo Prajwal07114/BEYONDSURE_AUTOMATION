@@ -1,0 +1,92 @@
+{% from "_base/macros.html" import doctype_open, doctype_close, container_open, container_close, header, footer, button, divider %}
+{{ doctype_open(brand, preheader=content.hero_headline) }}
+{{ container_open(600) }}
+{{ header(brand) }}
+
+<tr>
+<td class="px-24" style="padding: 22px 40px 0 40px; background-color:{{ brand.card_background }};" align="center">
+  <h1 class="h1" style="font-family:{{ brand.font_family }};font-size:22px;line-height:29px;color:{{ brand.text_color }};margin:0;font-weight:700;text-align:center;">
+    {{ content.hero_headline }}
+  </h1>
+</td>
+</tr>
+
+{# ---- HUGE HEADLINE STATISTIC ---- #}
+{% if content.statistics %}
+<tr>
+<td align="center" style="padding: 24px 24px 8px 24px; background-color:{{ brand.card_background }};">
+  <div style="font-family:{{ brand.font_family }};font-size:56px;line-height:60px;font-weight:900;color:{{ brand.primary_color }};">
+    {{ content.statistics[0].value }}
+  </div>
+  <div style="font-family:{{ brand.font_family }};font-size:14px;color:{{ brand.text_color }};max-width:400px;margin:6px auto 0 auto;">
+    {{ content.statistics[0].description }}
+  </div>
+  <div style="font-family:{{ brand.font_family }};font-size:10px;color:{{ brand.muted_text_color }};margin-top:6px;">
+    Source: {{ content.statistics[0].source }}
+  </div>
+</td>
+</tr>
+{% endif %}
+
+{% if content.intro %}
+<tr>
+<td class="px-24" style="padding: 14px 40px; background-color:{{ brand.card_background }};">
+  <p style="font-family:{{ brand.font_family }};font-size:14px;line-height:22px;color:{{ brand.muted_text_color }};margin:0;text-align:center;">{{ content.intro }}</p>
+</td>
+</tr>
+{% endif %}
+
+{# ---- SUPPORTING DATA CARDS ---- #}
+{% if content.statistics and content.statistics|length > 1 %}
+<tr>
+<td class="px-24" style="padding: 10px 24px 20px 24px; background-color:{{ brand.background_color }};">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+    {% for s in content.statistics[1:4] %}
+      <td class="stack" width="{{ (100/content.statistics[1:4]|length)|round(0,'floor') }}%" valign="top" style="padding:6px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:{{ brand.card_background }};border-radius:8px;">
+          <tr><td style="padding:14px;" align="center">
+            <div style="font-family:{{ brand.font_family }};font-size:20px;font-weight:800;color:{{ brand.accent_color }};">{{ s.value }}</div>
+            <div style="font-family:{{ brand.font_family }};font-size:11px;color:{{ brand.text_color }};margin-top:4px;">{{ s.description }}</div>
+          </td></tr>
+        </table>
+      </td>
+    {% endfor %}
+    </tr>
+  </table>
+</td>
+</tr>
+{% endif %}
+
+{# ---- INTERPRETATION ---- #}
+{% if content.expert_insight %}
+<tr>
+<td class="px-24" style="padding: 20px 40px;">
+  <p style="font-family:{{ brand.font_family }};font-size:14px;line-height:22px;color:{{ brand.text_color }};margin:0;">{{ content.expert_insight }}</p>
+</td>
+</tr>
+{% endif %}
+
+{# ---- KEY TAKEAWAY ---- #}
+{% if content.key_takeaway %}
+{{ divider() }}
+<tr>
+<td class="px-24" style="padding: 18px 40px;" align="center">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="background-color:{{ brand.dark_color }};border-radius:8px;">
+    <tr><td style="padding:14px 20px;">
+      <span style="font-family:{{ brand.font_family }};font-size:13px;color:#FFFFFF;font-weight:600;">{{ content.key_takeaway }}</span>
+    </td></tr>
+  </table>
+</td>
+</tr>
+{% endif %}
+
+<tr>
+<td align="center" style="padding: 26px 24px;">
+  {{ button(content.cta.label, content.cta.url or brand.website, brand) }}
+</td>
+</tr>
+
+{{ footer(brand, year, content.disclaimer) }}
+{{ container_close() }}
+{{ doctype_close() }}

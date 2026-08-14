@@ -1,0 +1,68 @@
+{% from "_base/macros.html" import doctype_open, doctype_close, container_open, container_close, header, footer, button, divider %}
+{{ doctype_open(brand, preheader=content.urgency_text or content.hero_headline) }}
+{{ container_open(600) }}
+{{ header(brand) }}
+
+{# ---- HIGH-CONTRAST DARK HERO ---- #}
+<tr>
+<td style="background-color:{{ brand.dark_color }}; padding: 40px 40px;" align="center">
+  {% if content.urgency_text %}
+  <div style="display:inline-block;padding:5px 14px;border-radius:4px;background-color:#D64545;font-family:{{ brand.font_family }};font-size:11px;font-weight:800;letter-spacing:1px;color:#fff;text-transform:uppercase;margin-bottom:14px;">
+    {{ content.urgency_text }}
+  </div>
+  <br>
+  {% endif %}
+  <h1 class="h1" style="font-family:{{ brand.font_family }};font-size:28px;line-height:35px;color:#FFFFFF;margin:6px 0 0 0;font-weight:800;text-align:center;">
+    {{ content.hero_headline }}
+  </h1>
+</td>
+</tr>
+
+{# ---- URGENCY STRIP ---- #}
+{% if content.offer and content.offer.expiry_text %}
+<tr>
+<td align="center" style="background-color:#2A0E0E; padding: 10px 24px;">
+  <span style="font-family:{{ brand.font_family }};font-size:12px;color:#FFD6D6;font-weight:600;">&#9203; {{ content.offer.expiry_text }}</span>
+</td>
+</tr>
+{% endif %}
+
+{% if content.intro %}
+<tr>
+<td class="px-24" style="padding: 22px 40px 6px 40px; background-color:{{ brand.card_background }};">
+  <p style="font-family:{{ brand.font_family }};font-size:14px;line-height:22px;color:{{ brand.text_color }};margin:0;">{{ content.intro }}</p>
+</td>
+</tr>
+{% endif %}
+
+{# ---- STACKED "REASONS TO ACT" LIST ---- #}
+{% if content.pain_points or content.benefits %}
+<tr>
+<td class="px-24" style="padding: 16px 40px;">
+  {% for item in (content.pain_points if content.pain_points else content.benefits) %}
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:10px;">
+    <tr>
+      <td width="26" valign="top">
+        <div style="width:20px;height:20px;border-radius:50%;background-color:#D64545;color:#fff;font-family:{{ brand.font_family }};font-size:11px;font-weight:800;text-align:center;line-height:20px;">!</div>
+      </td>
+      <td style="padding-left:8px;">
+        <span style="font-family:{{ brand.font_family }};font-size:13px;color:{{ brand.text_color }};">
+          {{ item if item is string else (item.title + ' \u2013 ' + item.description) }}
+        </span>
+      </td>
+    </tr>
+  </table>
+  {% endfor %}
+</td>
+</tr>
+{% endif %}
+
+<tr>
+<td align="center" style="padding: 20px 24px 32px 24px;">
+  {{ button(content.cta.label, content.cta.url or brand.website, brand, bg="#D64545") }}
+</td>
+</tr>
+
+{{ footer(brand, year, content.disclaimer) }}
+{{ container_close() }}
+{{ doctype_close() }}

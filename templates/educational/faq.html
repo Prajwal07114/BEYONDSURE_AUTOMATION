@@ -1,0 +1,65 @@
+{% from "_base/macros.html" import doctype_open, doctype_close, container_open, container_close, header, footer, button %}
+{{ doctype_open(brand, preheader=content.hero_headline) }}
+{{ container_open(600) }}
+{{ header(brand) }}
+
+<tr>
+<td class="px-24" style="padding: 24px 40px 6px 40px; background-color:{{ brand.card_background }};" align="center">
+  <h1 class="h1" style="font-family:{{ brand.font_family }};font-size:23px;line-height:30px;color:{{ brand.text_color }};margin:0;font-weight:800;text-align:center;">
+    {{ content.hero_headline }}
+  </h1>
+  {% if content.subheadline %}
+  <p style="font-family:{{ brand.font_family }};font-size:13px;color:{{ brand.muted_text_color }};margin:8px 0 0 0;text-align:center;">{{ content.subheadline }}</p>
+  {% endif %}
+</td>
+</tr>
+
+{# ---- ACCORDION-STYLED (visually, since real email clients can't do JS accordions) Q/A STACK ---- #}
+{% if content.faq %}
+<tr>
+<td class="px-24" style="padding: 20px 32px;">
+  {% for item in content.faq %}
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom:1px solid #E5E9F0;margin-bottom:{{ '0' if loop.last else '2' }}px;">
+    <tr>
+      <td style="padding:14px 4px 6px 4px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td width="24" valign="top">
+              <div style="width:18px;height:18px;border-radius:50%;background-color:{{ brand.primary_color }};color:#fff;font-family:{{ brand.font_family }};font-size:11px;font-weight:800;text-align:center;line-height:18px;">Q</div>
+            </td>
+            <td style="padding-left:10px;">
+              <span style="font-family:{{ brand.font_family }};font-size:13px;font-weight:700;color:{{ brand.text_color }};">{{ item.question }}</span>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:0 4px 14px 4px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td width="24" valign="top">
+              <div style="width:18px;height:18px;border-radius:50%;background-color:{{ brand.background_color }};color:{{ brand.muted_text_color }};font-family:{{ brand.font_family }};font-size:11px;font-weight:800;text-align:center;line-height:18px;">A</div>
+            </td>
+            <td style="padding-left:10px;">
+              <span style="font-family:{{ brand.font_family }};font-size:12px;color:{{ brand.muted_text_color }};line-height:19px;">{{ item.answer }}</span>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  {% endfor %}
+</td>
+</tr>
+{% endif %}
+
+<tr>
+<td align="center" style="padding: 18px 24px 30px 24px;">
+  {{ button(content.cta.label, content.cta.url or brand.website, brand) }}
+</td>
+</tr>
+
+{{ footer(brand, year, content.disclaimer) }}
+{{ container_close() }}
+{{ doctype_close() }}

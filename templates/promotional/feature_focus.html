@@ -1,0 +1,72 @@
+{% from "_base/macros.html" import doctype_open, doctype_close, container_open, container_close, header, footer, button, divider %}
+{{ doctype_open(brand, preheader=content.hero_headline) }}
+{{ container_open(600) }}
+{{ header(brand) }}
+
+{# ---- COMPACT HERO ---- #}
+<tr>
+<td class="px-24" style="padding: 24px 40px 4px 40px; background-color:{{ brand.card_background }};">
+  <div style="font-family:{{ brand.font_family }};font-size:11px;letter-spacing:1px;text-transform:uppercase;color:{{ brand.primary_color }};font-weight:700;">Feature Focus</div>
+  <h1 class="h1" style="font-family:{{ brand.font_family }};font-size:25px;line-height:32px;color:{{ brand.text_color }};margin:8px 0 0 0;font-weight:800;">
+    {{ content.hero_headline }}
+  </h1>
+</td>
+</tr>
+
+{# ---- MAGAZINE-STYLE PULL QUOTE ---- #}
+{% if content.subheadline or content.expert_insight %}
+<tr>
+<td class="px-24" style="padding: 16px 40px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:2px solid {{ brand.accent_color }};border-bottom:2px solid {{ brand.accent_color }};">
+    <tr><td style="padding:16px 4px;">
+      <div style="font-family: Georgia, serif; font-size:17px;line-height:26px;color:{{ brand.text_color }};font-style:italic;">
+        {{ content.subheadline or content.expert_insight }}
+      </div>
+    </td></tr>
+  </table>
+</td>
+</tr>
+{% endif %}
+
+{# ---- LARGE NUMBERED FEATURE LIST (the core of this layout) ---- #}
+{% if content.features %}
+<tr>
+<td class="px-24" style="padding: 18px 40px;">
+  {% for f in content.features %}
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:{{ '0' if loop.last else '20' }}px;">
+    <tr>
+      <td width="48" valign="top">
+        <div style="font-family:{{ brand.font_family }};font-size:28px;font-weight:900;color:{{ brand.background_color == '#F4F6F9' and brand.primary_color or brand.primary_color }};opacity:0.35;">
+          {{ '%02d' % loop.index }}
+        </div>
+      </td>
+      <td style="padding-left:6px;padding-top:6px;">
+        <div style="font-family:{{ brand.font_family }};font-size:15px;font-weight:700;color:{{ brand.text_color }};">{{ f.name }}</div>
+        <div style="font-family:{{ brand.font_family }};font-size:13px;line-height:20px;color:{{ brand.muted_text_color }};margin-top:5px;">{{ f.description }}</div>
+      </td>
+    </tr>
+  </table>
+  {% endfor %}
+</td>
+</tr>
+{% endif %}
+
+{% if content.statistics %}
+{{ divider() }}
+<tr>
+<td class="px-24" style="padding: 16px 40px;" align="center">
+  <span style="font-family:{{ brand.font_family }};font-size:20px;font-weight:800;color:{{ brand.primary_color }};">{{ content.statistics[0].value }}</span>
+  <span style="font-family:{{ brand.font_family }};font-size:12px;color:{{ brand.muted_text_color }};"> {{ content.statistics[0].description }}</span>
+</td>
+</tr>
+{% endif %}
+
+<tr>
+<td align="center" style="padding: 26px 24px;">
+  {{ button(content.cta.label, content.cta.url or brand.website, brand) }}
+</td>
+</tr>
+
+{{ footer(brand, year, content.disclaimer) }}
+{{ container_close() }}
+{{ doctype_close() }}

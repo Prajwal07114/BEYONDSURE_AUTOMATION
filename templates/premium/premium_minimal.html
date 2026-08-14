@@ -1,0 +1,71 @@
+{% from "_base/macros.html" import doctype_open, doctype_close, container_open, container_close, footer, divider %}
+{{ doctype_open(brand, preheader=content.hero_headline) }}
+{{ container_open(560) }}
+
+{# ---- EXTREME WHITESPACE, SINGLE COLUMN, SERIF-LED LAYOUT ---- #}
+<tr>
+<td align="center" style="padding: 64px 50px 0 50px;">
+  <span style="font-family: Georgia, 'Times New Roman', serif; font-size:15px;letter-spacing:4px;color:{{ brand.dark_color }};text-transform:uppercase;">{{ brand.logo_text }}</span>
+</td>
+</tr>
+
+<tr>
+<td align="center" style="padding: 40px 50px 0 50px;">
+  <h1 class="h1" style="font-family: Georgia, serif; font-size:26px;line-height:36px;color:{{ brand.dark_color }};margin:0;font-weight:400;text-align:center;">
+    {{ content.hero_headline }}
+  </h1>
+</td>
+</tr>
+
+{% if content.subheadline %}
+<tr>
+<td align="center" style="padding: 18px 60px 0 60px;">
+  <p style="font-family: Georgia, serif; font-size:14px;line-height:23px;color:{{ brand.muted_text_color }};margin:0;text-align:center;font-style:italic;">
+    {{ content.subheadline }}
+  </p>
+</td>
+</tr>
+{% endif %}
+
+<tr>
+<td align="center" style="padding: 30px 50px 0 50px;">
+  <div style="width:40px;border-top:1px solid {{ brand.secondary_color }};"></div>
+</td>
+</tr>
+
+{% if content.intro %}
+<tr>
+<td align="center" style="padding: 30px 60px 0 60px;">
+  <p style="font-family: Georgia, serif; font-size:13px;line-height:23px;color:{{ brand.text_color }};margin:0;text-align:center;">
+    {{ content.intro }}
+  </p>
+</td>
+</tr>
+{% endif %}
+
+{% if content.benefits %}
+<tr>
+<td align="center" style="padding: 36px 60px 0 60px;">
+  {% for b in content.benefits %}
+  <div style="margin-bottom:{{ '0' if loop.last else '20' }}px;">
+    <div style="font-family: Georgia, serif; font-size:13px;font-weight:700;color:{{ brand.dark_color }};letter-spacing:0.5px;">{{ b.title }}</div>
+    <div style="font-family: Georgia, serif; font-size:12px;color:{{ brand.muted_text_color }};margin-top:5px;line-height:19px;">{{ b.description }}</div>
+  </div>
+  {% endfor %}
+</td>
+</tr>
+{% endif %}
+
+<tr>
+<td align="center" style="padding: 44px 50px 8px 50px;">
+  <a href="{{ content.cta.url or brand.website }}" style="font-family: Georgia, serif; font-size:13px;letter-spacing:2px;text-transform:uppercase;color:{{ brand.dark_color }};border-bottom:1px solid {{ brand.dark_color }};padding-bottom:4px;">
+    {{ content.cta.label }}
+  </a>
+</td>
+</tr>
+
+<tr><td style="padding-top:44px;"></td></tr>
+
+{{ footer(brand, year, content.disclaimer) }}
+{{ container_close() }}
+{{ doctype_close() }}

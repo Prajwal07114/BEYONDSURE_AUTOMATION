@@ -1,0 +1,67 @@
+{% from "_base/macros.html" import doctype_open, doctype_close, container_open, container_close, footer, button %}
+{{ doctype_open(brand, preheader=content.hero_headline) }}
+{{ container_open(600) }}
+
+{# ---- DARK-AND-GOLD EDITORIAL SPREAD ---- #}
+<tr>
+<td style="background-color:{{ brand.dark_color }}; padding: 30px 44px 0 44px;">
+  <span style="font-family: Georgia, serif; font-size:14px;letter-spacing:3px;color:{{ brand.secondary_color }};text-transform:uppercase;">{{ brand.logo_text }}</span>
+</td>
+</tr>
+
+{# ---- FULL-WIDTH FEATURE BAND ---- #}
+<tr>
+<td style="background-color:{{ brand.dark_color }}; padding: 26px 44px 50px 44px;">
+  <div style="font-family: Georgia, serif; font-size:11px;letter-spacing:2px;color:#B8956A;text-transform:uppercase;">{{ content.category | replace('_',' ') | title }}</div>
+  <h1 class="h1" style="font-family: Georgia, serif; font-size:30px;line-height:38px;color:#FFFFFF;margin:14px 0 0 0;font-weight:400;">
+    {{ content.hero_headline }}
+  </h1>
+  {% if content.subheadline %}
+  <p style="font-family: Georgia, serif; font-size:14px;line-height:23px;color:#CBB89A;margin:16px 0 0 0;">{{ content.subheadline }}</p>
+  {% endif %}
+</td>
+</tr>
+
+{% if content.intro %}
+<tr>
+<td class="px-24" style="padding: 32px 44px 0 44px; background-color:{{ brand.card_background }};">
+  <p style="font-family: Georgia, serif; font-size:14px;line-height:24px;color:{{ brand.text_color }};margin:0;">{{ content.intro }}</p>
+</td>
+</tr>
+{% endif %}
+
+{% if content.benefits %}
+<tr>
+<td class="px-24" style="padding: 26px 44px;">
+  {% for b in content.benefits %}
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:{{ '0' if loop.last else '18' }}px;border-top:1px solid #E9E2D5;">
+    <tr><td style="padding-top:14px;">
+      <div style="font-family: Georgia, serif; font-size:14px;font-weight:700;color:{{ brand.dark_color }};">{{ b.title }}</div>
+      <div style="font-family: Georgia, serif; font-size:12px;color:{{ brand.muted_text_color }};margin-top:6px;line-height:19px;">{{ b.description }}</div>
+    </td></tr>
+  </table>
+  {% endfor %}
+</td>
+</tr>
+{% endif %}
+
+{% if content.testimonial %}
+<tr>
+<td style="background-color:#F7F2EA; padding: 26px 44px;" align="center">
+  <div style="font-family: Georgia, serif; font-size:15px;font-style:italic;color:{{ brand.dark_color }};line-height:24px;text-align:center;">&ldquo;{{ content.testimonial.quote }}&rdquo;</div>
+  {% if content.testimonial.attribution %}
+  <div style="font-family: Georgia, serif; font-size:11px;color:{{ brand.muted_text_color }};margin-top:10px;letter-spacing:0.5px;">{{ content.testimonial.attribution }}</div>
+  {% endif %}
+</td>
+</tr>
+{% endif %}
+
+<tr>
+<td align="center" style="padding: 30px 24px;background-color:{{ brand.card_background }};">
+  {{ button(content.cta.label, content.cta.url or brand.website, brand, bg=brand.dark_color, color=brand.secondary_color) }}
+</td>
+</tr>
+
+{{ footer(brand, year, content.disclaimer) }}
+{{ container_close() }}
+{{ doctype_close() }}

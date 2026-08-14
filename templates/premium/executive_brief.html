@@ -1,0 +1,77 @@
+{% from "_base/macros.html" import doctype_open, doctype_close, container_open, container_close, footer, button %}
+{{ doctype_open(brand, preheader=content.hero_headline) }}
+{{ container_open(640) }}
+
+{# ---- MEMO-STYLE HEADER BLOCK ---- #}
+<tr>
+<td style="padding: 34px 46px 0 46px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom:2px solid {{ brand.dark_color }};padding-bottom:14px;">
+    <tr>
+      <td>
+        <span style="font-family:{{ brand.font_family }};font-size:13px;letter-spacing:2px;color:{{ brand.dark_color }};text-transform:uppercase;font-weight:700;">{{ brand.logo_text }}</span>
+      </td>
+      <td align="right">
+        <span style="font-family:{{ brand.font_family }};font-size:10px;color:{{ brand.muted_text_color }};text-transform:uppercase;letter-spacing:1px;">Executive Brief</span>
+      </td>
+    </tr>
+  </table>
+</td>
+</tr>
+
+<tr>
+<td style="padding: 20px 46px 0 46px;">
+  <h1 class="h1" style="font-family:{{ brand.font_family }};font-size:22px;line-height:29px;color:{{ brand.text_color }};margin:0;font-weight:800;">
+    {{ content.hero_headline }}
+  </h1>
+  {% if content.subheadline %}
+  <p style="font-family:{{ brand.font_family }};font-size:12px;color:{{ brand.muted_text_color }};margin:8px 0 0 0;">{{ content.subheadline }}</p>
+  {% endif %}
+</td>
+</tr>
+
+{% if content.intro %}
+<tr>
+<td style="padding: 16px 46px 0 46px;">
+  <p style="font-family:{{ brand.font_family }};font-size:13px;line-height:21px;color:{{ brand.text_color }};margin:0;">{{ content.intro }}</p>
+</td>
+</tr>
+{% endif %}
+
+{# ---- NUMBERED CLAUSES -- dense, formal, no cards/icons ---- #}
+{% if content.benefits or content.features %}
+<tr>
+<td style="padding: 18px 46px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    {% for item in (content.benefits if content.benefits else content.features) %}
+    <tr>
+      <td width="26" valign="top" style="padding:7px 0;">
+        <span style="font-family:{{ brand.font_family }};font-size:12px;font-weight:700;color:{{ brand.dark_color }};">{{ '%d.' % loop.index }}</span>
+      </td>
+      <td style="padding:7px 0;border-bottom:1px solid #EEF0F4;">
+        <span style="font-family:{{ brand.font_family }};font-size:12px;font-weight:700;color:{{ brand.text_color }};">{{ item.title if item.title is defined else item.name }}</span>
+        <span style="font-family:{{ brand.font_family }};font-size:12px;color:{{ brand.muted_text_color }};"> &mdash; {{ item.description }}</span>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</td>
+</tr>
+{% endif %}
+
+{% if content.key_takeaway %}
+<tr>
+<td style="padding: 4px 46px 18px 46px;">
+  <p style="font-family:{{ brand.font_family }};font-size:12px;color:{{ brand.text_color }};margin:0;font-style:italic;">Summary: {{ content.key_takeaway }}</p>
+</td>
+</tr>
+{% endif %}
+
+<tr>
+<td align="left" style="padding: 6px 46px 36px 46px;">
+  {{ button(content.cta.label, content.cta.url or brand.website, brand, bg=brand.dark_color) }}
+</td>
+</tr>
+
+{{ footer(brand, year, content.disclaimer) }}
+{{ container_close() }}
+{{ doctype_close() }}

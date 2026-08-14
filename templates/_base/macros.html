@@ -1,0 +1,134 @@
+{# ---------------------------------------------------------------------
+   macros.html
+   Shared, email-client-safe building blocks reused across templates.
+   Every template pulls the SAME header/footer/button so brand identity
+   stays fixed -- but each template arranges its body completely
+   differently (see each category's .html files).
+--------------------------------------------------------------------- #}
+
+{% macro doctype_open(brand, preheader="") -%}
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>{{ brand.name }}</title>
+<!--[if mso]>
+<noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+<![endif]-->
+<style>
+  body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+  table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+  img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+  body { margin: 0; padding: 0; width: 100% !important; background-color: {{ brand.background_color }}; }
+  a { text-decoration: none; }
+  @media screen and (max-width: 600px) {
+    .container { width: 100% !important; }
+    .stack { display: block !important; width: 100% !important; }
+    .px-24 { padding-left: 20px !important; padding-right: 20px !important; }
+    .h1 { font-size: 26px !important; line-height: 32px !important; }
+    .h2 { font-size: 21px !important; line-height: 28px !important; }
+    .hide-mobile { display: none !important; }
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background-color:{{ brand.background_color }};font-family:{{ brand.font_family }};">
+{% if preheader %}
+<div style="display:none;font-size:1px;color:{{ brand.background_color }};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
+{{ preheader }}
+</div>
+{% endif %}
+<span style="display:none;">&nbsp;</span>
+{%- endmacro %}
+
+{% macro doctype_close() -%}
+</body>
+</html>
+{%- endmacro %}
+
+{% macro container_open(width=600) -%}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:inherit;">
+<tr>
+<td align="center" style="padding: 24px 12px;">
+<table role="presentation" class="container" width="{{ width }}" cellpadding="0" cellspacing="0" border="0" style="width:{{ width }}px;max-width:100%;">
+{%- endmacro %}
+
+{% macro container_close() -%}
+</table>
+</td>
+</tr>
+</table>
+{%- endmacro %}
+
+{# Standard top logo bar -- identical across every template on purpose: brand recognition #}
+{% macro header(brand) -%}
+<tr>
+<td class="px-24" style="padding: 28px 24px 20px 24px; background-color:{{ brand.card_background }};" align="center">
+  <span style="font-family:{{ brand.font_family }};font-size:22px;font-weight:700;letter-spacing:0.5px;color:{{ brand.primary_color }};">
+    {{ brand.logo_text }}
+  </span>
+  <div style="font-family:{{ brand.font_family }};font-size:11px;letter-spacing:1px;color:{{ brand.muted_text_color }};text-transform:uppercase;margin-top:4px;">
+    {{ brand.tagline }}
+  </div>
+</td>
+</tr>
+{%- endmacro %}
+
+{# Minimal header variant for premium/editorial templates: smaller, left aligned #}
+{% macro header_minimal(brand) -%}
+<tr>
+<td class="px-24" style="padding: 32px 40px 8px 40px;" align="left">
+  <span style="font-family: Georgia, 'Times New Roman', serif; font-size:18px;letter-spacing:2px;color:{{ brand.dark_color }};text-transform:uppercase;">
+    {{ brand.logo_text }}
+  </span>
+</td>
+</tr>
+{%- endmacro %}
+
+{% macro button(label, url, brand, bg=None, color="#FFFFFF") -%}
+<table role="presentation" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td align="center" style="border-radius:6px; background-color:{{ bg or brand.primary_color }};">
+  <a href="{{ url }}" target="_blank" style="display:inline-block;padding:14px 32px;font-family:{{ brand.font_family }};font-size:15px;font-weight:600;color:{{ color }};border-radius:6px;">
+    {{ label }}
+  </a>
+</td>
+</tr>
+</table>
+{%- endmacro %}
+
+{% macro footer(brand, year, extra_disclaimer=None) -%}
+<tr>
+<td class="px-24" style="padding: 28px 24px; background-color:{{ brand.dark_color }};" align="center">
+  <div style="font-family:{{ brand.font_family }};font-size:12px;color:#C7CDDB;line-height:18px;">
+    <a href="{{ brand.social.linkedin }}" style="color:#C7CDDB;margin:0 6px;">LinkedIn</a>|
+    <a href="{{ brand.social.twitter }}" style="color:#C7CDDB;margin:0 6px;">Twitter</a>|
+    <a href="{{ brand.social.instagram }}" style="color:#C7CDDB;margin:0 6px;">Instagram</a>
+  </div>
+  <div style="font-family:{{ brand.font_family }};font-size:11px;color:#9AA3B8;line-height:17px;margin-top:14px;max-width:480px;">
+    {{ brand.irdai_disclaimer }}
+  </div>
+  {% if extra_disclaimer %}
+  <div style="font-family:{{ brand.font_family }};font-size:11px;color:#9AA3B8;line-height:17px;margin-top:10px;max-width:480px;">
+    {{ extra_disclaimer }}
+  </div>
+  {% endif %}
+  <div style="font-family:{{ brand.font_family }};font-size:11px;color:#7C859C;line-height:16px;margin-top:14px;">
+    {{ brand.legal_footer.format(year=year) }}<br>
+    {{ brand.address }}
+  </div>
+  <div style="font-family:{{ brand.font_family }};font-size:11px;color:#7C859C;margin-top:10px;">
+    <a href="{{ brand.unsubscribe_url }}" style="color:#7C859C;text-decoration:underline;">Unsubscribe</a>
+    &nbsp;&middot;&nbsp;
+    <a href="{{ brand.privacy_url }}" style="color:#7C859C;text-decoration:underline;">Privacy Policy</a>
+    &nbsp;&middot;&nbsp;
+    <a href="{{ brand.support_email and 'mailto:' + brand.support_email }}" style="color:#7C859C;text-decoration:underline;">{{ brand.support_email }}</a>
+  </div>
+</td>
+</tr>
+{%- endmacro %}
+
+{% macro divider(color="#E5E9F0") -%}
+<tr><td style="padding:0 24px;"><div style="border-top:1px solid {{ color }};"></div></td></tr>
+{%- endmacro %}

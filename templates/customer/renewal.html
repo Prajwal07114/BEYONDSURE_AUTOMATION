@@ -1,0 +1,68 @@
+{% from "_base/macros.html" import doctype_open, doctype_close, container_open, container_close, header, footer, button, divider %}
+{{ doctype_open(brand, preheader=content.hero_headline) }}
+{{ container_open(600) }}
+{{ header(brand) }}
+
+<tr>
+<td class="px-24" style="padding: 22px 40px 4px 40px; background-color:{{ brand.card_background }};">
+  <h1 class="h1" style="font-family:{{ brand.font_family }};font-size:22px;line-height:29px;color:{{ brand.text_color }};margin:0;font-weight:800;">
+    {{ content.hero_headline }}
+  </h1>
+  {% if content.intro %}
+  <p style="font-family:{{ brand.font_family }};font-size:13px;color:{{ brand.muted_text_color }};margin:10px 0 0 0;">{{ content.intro }}</p>
+  {% endif %}
+</td>
+</tr>
+
+{# ---- POLICY-CARD LAYOUT (looks like a statement) ---- #}
+<tr>
+<td class="px-24" style="padding: 20px 40px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #D8DEE9;border-radius:10px;">
+    <tr>
+      <td style="background-color:{{ brand.primary_color }};border-radius:10px 10px 0 0;padding:12px 18px;">
+        <span style="font-family:{{ brand.font_family }};font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#fff;font-weight:700;">Policy Renewal Notice</span>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:18px;">
+        {% if content.urgency_text %}
+        <div style="font-family:{{ brand.font_family }};font-size:13px;color:#C2410C;font-weight:700;margin-bottom:10px;">{{ content.urgency_text }}</div>
+        {% endif %}
+        {% if content.benefits %}
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+          {% for b in content.benefits %}
+          <tr>
+            <td style="padding:5px 0;border-bottom:1px solid #F0F2F6;">
+              <span style="font-family:{{ brand.font_family }};font-size:12px;color:{{ brand.muted_text_color }};">{{ b.title }}</span>
+            </td>
+            <td align="right" style="padding:5px 0;border-bottom:1px solid #F0F2F6;">
+              <span style="font-family:{{ brand.font_family }};font-size:12px;color:{{ brand.text_color }};font-weight:600;">{{ b.description }}</span>
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+</td>
+</tr>
+
+{# ---- RENEWAL ACTION BAR ---- #}
+<tr>
+<td align="center" style="padding: 6px 24px 30px 24px;">
+  {{ button(content.cta.label, content.cta.url or brand.website, brand, bg=brand.success_color) }}
+</td>
+</tr>
+
+{% if content.testimonial %}
+<tr>
+<td class="px-24" style="padding: 0 40px 20px 40px;">
+  <p style="font-family:{{ brand.font_family }};font-size:12px;font-style:italic;color:{{ brand.muted_text_color }};margin:0;text-align:center;">&ldquo;{{ content.testimonial.quote }}&rdquo;</p>
+</td>
+</tr>
+{% endif %}
+
+{{ footer(brand, year, content.disclaimer) }}
+{{ container_close() }}
+{{ doctype_close() }}

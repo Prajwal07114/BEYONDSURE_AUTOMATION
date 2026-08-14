@@ -1,0 +1,68 @@
+{% from "_base/macros.html" import doctype_open, doctype_close, container_open, container_close, header, footer, button %}
+{{ doctype_open(brand, preheader=content.hero_headline) }}
+{{ container_open(600) }}
+{{ header(brand) }}
+
+{# ---- SPLIT HERO: headline block left, feature list panel right ---- #}
+<tr>
+<td class="px-24" style="padding: 0 0 0 0; background-color:{{ brand.card_background }};">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td width="55%" class="stack" valign="top" style="padding: 30px 24px 30px 40px;">
+        <div style="font-family:{{ brand.font_family }};font-size:11px;letter-spacing:1px;text-transform:uppercase;color:{{ brand.accent_color }};font-weight:800;">New</div>
+        <h1 class="h1" style="font-family:{{ brand.font_family }};font-size:23px;line-height:30px;color:{{ brand.text_color }};margin:10px 0 0 0;font-weight:800;">
+          {{ content.hero_headline }}
+        </h1>
+        {% if content.subheadline %}
+        <p style="font-family:{{ brand.font_family }};font-size:12px;color:{{ brand.muted_text_color }};margin:10px 0 0 0;">{{ content.subheadline }}</p>
+        {% endif %}
+      </td>
+      <td width="45%" class="stack" valign="top" style="padding: 30px 40px 30px 24px; background-color:{{ brand.background_color }};">
+        {% if content.features %}
+        {% for f in content.features[:3] %}
+        <div style="margin-bottom:{{ '0' if loop.last else '12' }}px;">
+          <div style="font-family:{{ brand.font_family }};font-size:12px;font-weight:700;color:{{ brand.text_color }};">&#9656; {{ f.name }}</div>
+          <div style="font-family:{{ brand.font_family }};font-size:11px;color:{{ brand.muted_text_color }};margin-top:2px;line-height:16px;padding-left:14px;">{{ f.description }}</div>
+        </div>
+        {% endfor %}
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+</td>
+</tr>
+
+{% if content.intro %}
+<tr>
+<td class="px-24" style="padding: 22px 40px 0 40px;">
+  <p style="font-family:{{ brand.font_family }};font-size:13px;line-height:21px;color:{{ brand.text_color }};margin:0;">{{ content.intro }}</p>
+</td>
+</tr>
+{% endif %}
+
+{% if content.benefits %}
+<tr>
+<td class="px-24" style="padding: 16px 40px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+    {% for b in content.benefits[:3] %}
+      <td class="stack" align="center" width="{{ (100/content.benefits[:3]|length)|round(0,'floor') }}%" style="padding:6px;">
+        <div style="font-family:{{ brand.font_family }};font-size:12px;font-weight:700;color:{{ brand.primary_color }};">{{ b.title }}</div>
+        <div style="font-family:{{ brand.font_family }};font-size:11px;color:{{ brand.muted_text_color }};margin-top:4px;">{{ b.description }}</div>
+      </td>
+    {% endfor %}
+    </tr>
+  </table>
+</td>
+</tr>
+{% endif %}
+
+<tr>
+<td align="center" style="padding: 16px 24px 30px 24px;">
+  {{ button(content.cta.label, content.cta.url or brand.website, brand) }}
+</td>
+</tr>
+
+{{ footer(brand, year, content.disclaimer) }}
+{{ container_close() }}
+{{ doctype_close() }}
