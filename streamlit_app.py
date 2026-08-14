@@ -6,12 +6,13 @@ BeyondSure AI Email Generator
 Workflow:
 
 1. User enters campaign topic
-2. System validates that the topic belongs to Healthcare or Insurance
+2. System validates Healthcare / Insurance domain
 3. System finds 5 relevant + structurally different templates
 4. Five HTML previews are shown
 5. User selects one template
-6. ONLY THEN Groq generates the final campaign content
+6. Groq generates the final campaign content
 7. Final email is rendered using the selected template
+8. User can regenerate the email without selecting a template again
 """
 
 from pathlib import Path
@@ -47,31 +48,17 @@ ALLOWED_DOMAIN_KEYWORDS = [
     "pharmacy",
     "dental",
     "diagnostic",
-    "diagnostics",
     "checkup",
-    "healthcare",
     "telemedicine",
-    "therapy",
-    "care",
-    "emergency",
-    "ambulance",
-    "nurse",
-    "nursing",
-    "specialist",
-    "healthcare provider",
 
     # Insurance
     "insurance",
     "policy",
     "premium",
     "claim",
-    "claims",
     "coverage",
     "insured",
     "insurer",
-    "underwriting",
-    "renewal",
-    "renew",
     "life insurance",
     "health insurance",
     "motor insurance",
@@ -80,19 +67,11 @@ ALLOWED_DOMAIN_KEYWORDS = [
     "travel insurance",
     "home insurance",
     "term insurance",
-    "medical insurance",
-    "property insurance",
-    "business insurance",
 ]
 
 
 def is_allowed_domain(topic: str) -> bool:
-    """
-    Allow only Healthcare and Insurance related topics.
-    """
-
-    if not topic:
-        return False
+    """Allow only Healthcare and Insurance related topics."""
 
     topic_lower = topic.lower().strip()
 
@@ -103,12 +82,33 @@ def is_allowed_domain(topic: str) -> bool:
 
 
 # ============================================================================
+# SESSION STATE INITIALIZATION
+# ============================================================================
+
+DEFAULT_SESSION_STATE = {
+    "recommended_templates": None,
+    "preview_topic": None,
+    "selected_template": None,
+    "selected_category": None,
+    "last_html": None,
+    "last_topic": None,
+    "last_template": None,
+}
+
+
+for key, default_value in DEFAULT_SESSION_STATE.items():
+
+    if key not in st.session_state:
+        st.session_state[key] = default_value
+
+
+# ============================================================================
 # CONFIGURATION
 # ============================================================================
 
 st.set_page_config(
     page_title="BeyondSure AI Email Generator",
-    page_icon="📧",
+    page_icon="Email",
     layout="wide",
 )
 
@@ -188,6 +188,7 @@ st.markdown(
 # HELPER FUNCTIONS
 # ============================================================================
 
+
 def get_template_preview_path(template_key: str):
     """
     Find the HTML preview for a template.
@@ -198,10 +199,6 @@ def get_template_preview_path(template_key: str):
         preview-gallery/<number>-<template_key>.html
         templates/<template_key>.html
     """
-
-    # ------------------------------------------------------------------
-    # 1. Search preview-gallery
-    # ------------------------------------------------------------------
 
     if PREVIEW_GALLERY_DIR.exists():
 
@@ -221,10 +218,6 @@ def get_template_preview_path(template_key: str):
 
         if matches:
             return matches[0]
-
-    # ------------------------------------------------------------------
-    # 2. Search templates
-    # ------------------------------------------------------------------
 
     if TEMPLATES_DIR.exists():
 
@@ -250,7 +243,7 @@ def get_template_preview_path(template_key: str):
 
 def load_template_preview(template_key: str):
     """
-    Load an existing static HTML template preview.
+    Load an existing static HTML preview.
 
     No LLM call is made here.
     """
@@ -263,10 +256,13 @@ def load_template_preview(template_key: str):
         return None
 
     try:
+
         return preview_path.read_text(
             encoding="utf-8"
         )
+
     except Exception:
+
         return None
 
 
@@ -280,14 +276,12 @@ def find_five_templates(
     relevant and structurally diverse templates.
     """
 
-    results = select_templates(
+    return select_templates(
         topic=topic,
         campaign_type=campaign_type,
         target_audience=target_audience,
         count=5,
     )
-
-    return results
 
 
 def normalize_template_data(template_data):
@@ -369,9 +363,9 @@ with tab_generate:
 
     st.subheader("Campaign Details")
 
-    # ------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # INPUTS
-    # ------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     topic = st.text_input(
         "Campaign Topic",
@@ -400,9 +394,9 @@ with tab_generate:
         key="campaign_type",
     )
 
-    # ------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # STEP 1
-    # ------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     st.markdown(
         '<div class="step-title">Step 1: Find Designs</div>',
@@ -410,20 +404,20 @@ with tab_generate:
     )
 
     find_templates_clicked = st.button(
-        "🎨 Show 5 Unique Templates",
+        "Show 5 Unique Templates",
         type="primary",
         use_container_width=True,
     )
 
-    # ------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # FIND TEMPLATES
-    # ------------------------------------------------------------------
+    # ------------------------------------------------------------------------
 
     if find_templates_clicked:
 
-        # ==============================================================
+        # --------------------------------------------------------------------
         # BASIC VALIDATION
-        # ==============================================================
+        # --------------------------------------------------------------------
 
         if not topic or len(topic.strip()) < 3:
 
@@ -434,14 +428,14 @@ with tab_generate:
 
             st.stop()
 
-        # ==============================================================
+        # --------------------------------------------------------------------
         # DOMAIN VALIDATION
-        # ==============================================================
+        # --------------------------------------------------------------------
 
         if not is_allowed_domain(topic):
 
             st.error(
-                "❌ Template cannot be generated."
+                "Template cannot be generated."
             )
 
             st.warning(
@@ -457,9 +451,9 @@ with tab_generate:
 
             st.stop()
 
-        # ==============================================================
+        # --------------------------------------------------------------------
         # CATEGORY
-        # ==============================================================
+        # --------------------------------------------------------------------
 
         manual_category = None
 
@@ -471,9 +465,9 @@ with tab_generate:
                 .replace(" ", "_")
             )
 
-        # ==============================================================
-        # FIND FIVE TEMPLATES
-        # ==============================================================
+        # --------------------------------------------------------------------
+        # SELECT FIVE TEMPLATES
+        # --------------------------------------------------------------------
 
         with st.spinner(
             "Finding the best 5 unique designs..."
@@ -481,15 +475,13 @@ with tab_generate:
 
             try:
 
-                recommended_templates = (
-                    find_five_templates(
-                        topic=topic.strip(),
-                        campaign_type=manual_category,
-                        target_audience=(
-                            target_audience.strip()
-                            or None
-                        ),
-                    )
+                recommended_templates = find_five_templates(
+                    topic=topic.strip(),
+                    campaign_type=manual_category,
+                    target_audience=(
+                        target_audience.strip()
+                        or None
+                    ),
                 )
 
             except Exception as exc:
@@ -500,10 +492,6 @@ with tab_generate:
 
                 st.stop()
 
-        # ==============================================================
-        # CHECK RESULTS
-        # ==============================================================
-
         if not recommended_templates:
 
             st.error(
@@ -512,9 +500,9 @@ with tab_generate:
 
             st.stop()
 
-        # ==============================================================
+        # --------------------------------------------------------------------
         # SAVE RECOMMENDATIONS
-        # ==============================================================
+        # --------------------------------------------------------------------
 
         st.session_state[
             "recommended_templates"
@@ -524,41 +512,38 @@ with tab_generate:
             "preview_topic"
         ] = topic.strip()
 
-        # ==============================================================
+        # --------------------------------------------------------------------
         # RESET PREVIOUS SELECTION
-        # ==============================================================
+        # --------------------------------------------------------------------
 
-        st.session_state.pop(
-            "selected_template",
-            None,
-        )
+        st.session_state[
+            "selected_template"
+        ] = None
 
-        st.session_state.pop(
-            "selected_category",
-            None,
-        )
+        st.session_state[
+            "selected_category"
+        ] = None
 
-        st.session_state.pop(
-            "last_html",
-            None,
-        )
+        st.session_state[
+            "last_html"
+        ] = None
 
-        st.session_state.pop(
-            "last_topic",
-            None,
-        )
+        st.session_state[
+            "last_topic"
+        ] = None
 
-        st.session_state.pop(
-            "last_template",
-            None,
-        )
+        st.session_state[
+            "last_template"
+        ] = None
 
 
     # =========================================================================
     # STEP 2: SHOW FIVE PREVIEWS
     # =========================================================================
 
-    if "recommended_templates" in st.session_state:
+    if st.session_state.get(
+        "recommended_templates"
+    ):
 
         st.divider()
 
@@ -579,9 +564,9 @@ with tab_generate:
             "recommended_templates"
         ]
 
-        # --------------------------------------------------------------
-        # SHOW 5 PREVIEWS IN 3 + 2 LAYOUT
-        # --------------------------------------------------------------
+        # --------------------------------------------------------------------
+        # SHOW 5 PREVIEWS
+        # --------------------------------------------------------------------
 
         for row_start in range(
             0,
@@ -642,10 +627,6 @@ with tab_generate:
 
                 with col:
 
-                    # --------------------------------------------------
-                    # TEMPLATE INFORMATION
-                    # --------------------------------------------------
-
                     st.markdown(
                         f"### {display_name}"
                     )
@@ -662,9 +643,9 @@ with tab_generate:
                             description
                         )
 
-                    # --------------------------------------------------
+                    # --------------------------------------------------------
                     # PREVIEW
-                    # --------------------------------------------------
+                    # --------------------------------------------------------
 
                     preview_html = (
                         load_template_preview(
@@ -690,9 +671,9 @@ with tab_generate:
                             template_key
                         )
 
-                    # --------------------------------------------------
+                    # --------------------------------------------------------
                     # SELECT TEMPLATE
-                    # --------------------------------------------------
+                    # --------------------------------------------------------
 
                     if st.button(
                         "Use This Template",
@@ -713,6 +694,18 @@ with tab_generate:
                             "selected_category"
                         ] = category
 
+                        st.session_state[
+                            "last_html"
+                        ] = None
+
+                        st.session_state[
+                            "last_topic"
+                        ] = None
+
+                        st.session_state[
+                            "last_template"
+                        ] = None
+
                         st.rerun()
 
 
@@ -720,7 +713,9 @@ with tab_generate:
     # SELECTED TEMPLATE
     # =========================================================================
 
-    if "selected_template" in st.session_state:
+    if st.session_state.get(
+        "selected_template"
+    ):
 
         selected_template = (
             st.session_state[
@@ -760,9 +755,9 @@ with tab_generate:
             unsafe_allow_html=True,
         )
 
-        # -----------------------------------------------------------------
+        # --------------------------------------------------------------------
         # STEP 3
-        # -----------------------------------------------------------------
+        # --------------------------------------------------------------------
 
         st.markdown(
             '<div class="step-title">'
@@ -776,7 +771,7 @@ with tab_generate:
         )
 
         generate_final_clicked = st.button(
-            "🚀 Generate Final Email",
+            "Generate Final Email",
             type="primary",
             use_container_width=True,
         )
@@ -788,9 +783,9 @@ with tab_generate:
                 topic.strip(),
             )
 
-            # -------------------------------------------------------------
+            # ----------------------------------------------------------------
             # GROQ
-            # -------------------------------------------------------------
+            # ----------------------------------------------------------------
 
             with st.spinner(
                 "Generating campaign content with Groq..."
@@ -798,16 +793,14 @@ with tab_generate:
 
                 try:
 
-                    content = (
-                        generate_campaign_content(
-                            topic=final_topic,
-                            category=selected_category,
-                            template_key=selected_template,
-                            target_audience=(
-                                target_audience.strip()
-                                or None
-                            ),
-                        )
+                    content = generate_campaign_content(
+                        topic=final_topic,
+                        category=selected_category,
+                        template_key=selected_template,
+                        target_audience=(
+                            target_audience.strip()
+                            or None
+                        ),
                     )
 
                 except Exception as exc:
@@ -818,9 +811,9 @@ with tab_generate:
 
                     st.stop()
 
-            # -------------------------------------------------------------
+            # ----------------------------------------------------------------
             # RENDER
-            # -------------------------------------------------------------
+            # ----------------------------------------------------------------
 
             with st.spinner(
                 "Rendering final email..."
@@ -841,9 +834,9 @@ with tab_generate:
 
                     st.stop()
 
-            # -------------------------------------------------------------
+            # ----------------------------------------------------------------
             # SAVE RESULT
-            # -------------------------------------------------------------
+            # ----------------------------------------------------------------
 
             st.session_state[
                 "last_html"
@@ -866,12 +859,14 @@ with tab_generate:
     # FINAL EMAIL PREVIEW
     # =========================================================================
 
-    if "last_html" in st.session_state:
+    if st.session_state.get(
+        "last_html"
+    ):
 
         st.divider()
 
         st.subheader(
-            "Final Email"
+            "Generated Email"
         )
 
         st.components.v1.html(
@@ -882,9 +877,9 @@ with tab_generate:
             scrolling=True,
         )
 
-        # --------------------------------------------------------------
-        # DOWNLOAD
-        # --------------------------------------------------------------
+        # --------------------------------------------------------------------
+        # DOWNLOAD FILE NAME
+        # --------------------------------------------------------------------
 
         file_slug = (
             "beyondsure_"
@@ -901,19 +896,122 @@ with tab_generate:
             + ".html"
         )
 
-        st.download_button(
-            "⬇️ Download HTML",
-            data=st.session_state[
-                "last_html"
-            ],
-            file_name=file_slug,
-            mime="text/html",
-            use_container_width=True,
-        )
+        # --------------------------------------------------------------------
+        # ACTION BUTTONS
+        # --------------------------------------------------------------------
 
-        # --------------------------------------------------------------
+        col_regenerate, col_download = st.columns(2)
+
+        with col_regenerate:
+
+            regenerate_clicked = st.button(
+                "Regenerate Email",
+                type="secondary",
+                use_container_width=True,
+            )
+
+        with col_download:
+
+            st.download_button(
+                "Download HTML",
+                data=st.session_state[
+                    "last_html"
+                ],
+                file_name=file_slug,
+                mime="text/html",
+                use_container_width=True,
+            )
+
+        # --------------------------------------------------------------------
+        # REGENERATE EMAIL
+        # --------------------------------------------------------------------
+
+        if regenerate_clicked:
+
+            final_topic = st.session_state.get(
+                "last_topic",
+                st.session_state.get(
+                    "preview_topic",
+                    topic.strip(),
+                ),
+            )
+
+            selected_template = st.session_state.get(
+                "last_template"
+            )
+
+            selected_category = st.session_state.get(
+                "selected_category"
+            )
+
+            if not selected_template:
+
+                st.error(
+                    "Please select a template before regenerating."
+                )
+
+                st.stop()
+
+            with st.spinner(
+                "Regenerating email with Groq..."
+            ):
+
+                try:
+
+                    # --------------------------------------------------------
+                    # CALL GROQ AGAIN
+                    # --------------------------------------------------------
+
+                    content = generate_campaign_content(
+                        topic=final_topic,
+                        category=selected_category,
+                        template_key=selected_template,
+                        target_audience=(
+                            target_audience.strip()
+                            or None
+                        ),
+                    )
+
+                    # --------------------------------------------------------
+                    # RENDER NEW EMAIL
+                    # --------------------------------------------------------
+
+                    html = render_email(
+                        selected_template,
+                        content,
+                    )
+
+                    # --------------------------------------------------------
+                    # REPLACE OLD EMAIL
+                    # --------------------------------------------------------
+
+                    st.session_state[
+                        "last_html"
+                    ] = html
+
+                    st.session_state[
+                        "last_topic"
+                    ] = final_topic
+
+                    st.session_state[
+                        "last_template"
+                    ] = selected_template
+
+                    st.success(
+                        "Email regenerated successfully."
+                    )
+
+                    st.rerun()
+
+                except Exception as exc:
+
+                    st.error(
+                        f"Regeneration failed: {exc}"
+                    )
+
+        # --------------------------------------------------------------------
         # RAW HTML
-        # --------------------------------------------------------------
+        # --------------------------------------------------------------------
 
         with st.expander(
             "View Raw HTML"
@@ -992,9 +1090,9 @@ with tab_gallery:
                     )
                 )
 
-                # ------------------------------------------------------
+                # ------------------------------------------------------------
                 # GALLERY PREVIEW
-                # ------------------------------------------------------
+                # ------------------------------------------------------------
 
                 preview_html = (
                     load_template_preview(
